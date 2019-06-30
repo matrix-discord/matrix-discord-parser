@@ -34,18 +34,16 @@ export interface IMatrixMessageParserCallbacks {
 
 export interface IMatrixMessageParserOpts {
     callbacks: IMatrixMessageParserCallbacks;
-    guild: Discord.Guild;
     displayname: string;
     listDepth?: number;
 }
 
 export class MatrixMessageParser {
-    private guild: Discord.Guild;
     private listDepth: number = 0;
     private listBulletPoints: string[] = ["●", "○", "■", "‣"];
     public async FormatMessage(
-        msg: IMatrixMessage,
         opts: IMatrixMessageParserOpts,
+        msg: IMatrixMessage,
     ): Promise<string> {
         opts.listDepth = 0;
         let reply = "";

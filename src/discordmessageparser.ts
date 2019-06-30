@@ -265,7 +265,7 @@ export class DiscordMessageParser {
         html: boolean = false,
     ): string {
         const id = node.id;
-        const role = msg.guild.roles.get(id);
+        const role = msg.guild ? msg.guild.roles.get(id) : null;
         if (!role) {
             return html ? `&lt;@&amp;${id}&gt;` : `<@&${id}>`;
         }
@@ -356,8 +356,9 @@ export class DiscordMessageParser {
             const channel = await opts.callbacks.getChannel(id);
             let replace = "";
             if (channel) {
+                const name = "#" + channel.name;
                 replace = html ? `<a href="${MATRIX_TO_LINK}${escapeHtml(channel.mxid)}">` +
-                    `${escapeHtml(channel.name)}</a>` : channel.name;
+                    `${escapeHtml(name)}</a>` : name;
             } else {
                 replace = html ? `&lt;#${escapeHtml(id)}&gt;` : `<#${id}>`;
             }

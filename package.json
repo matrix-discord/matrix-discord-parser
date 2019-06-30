@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/matrix-discord/matrix-discord-parser#readme",
   "dependencies": {
-    "discord-markdown": "git://github.com/Sorunome/discord-markdown#5086d4ccb10a90bcdc7656606f5b3f5430bffee9",
+    "discord-markdown": "git://github.com/Sorunome/discord-markdown#4ac2190a0de21fb75f57d245719cceff982614fd",
     "discord.js": "^11.5.1",
     "escape-html": "^1.0.3",
     "escape-string-regexp": "^1.0.5",
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^0.1.3",
-    "@types/chai": "^3.4.35",
-    "@types/mocha": "^5.2.5",
+    "@types/chai": "^3.5.2",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^10.12.0",
     "@types/sqlite3": "^3.1.3",
     "chai": "^3.5.0",
@@ -45,8 +45,8 @@
     "ts-node": "^8.1.0",
     "why-is-node-running": "^2.0.3"
   },
- "files": [
-   "src/*",
-   "lib/*"
- ]
+  "files": [
+    "src/*",
+    "lib/*"
+  ]
 }
