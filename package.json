@@ -2,7 +2,7 @@
   "name": "matrix-discord-parser",
   "version": "0.0.0",
   "description": "A bridge between Matrix and Discord",
-  "main": "discordas.js",
+  "main": "./lib/src/index.js",
   "scripts": {
     "prepublishOnly": "npm run build",
     "test": "npm run-script build && mocha --opts test/mocha.opts",
