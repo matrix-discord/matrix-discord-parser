@@ -101,10 +101,10 @@ describe("DiscordMessageParser", () => {
         });
         it("processes non-discord markdown correctly", async () => {
             const mp = new DiscordMessageParser();
-            let msg = getMessage("> inb4 tests");
+            let msg = getMessage(">inb4 tests");
             let result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("> inb4 tests");
-            expect(result.formattedBody).is.equal("&gt; inb4 tests");
+            expect(result.body).is.equal(">inb4 tests");
+            expect(result.formattedBody).is.equal("&gt;inb4 tests");
 
             msg = getMessage("[test](http://example.com)");
             result = await mp.FormatMessage(defaultOpts, msg);
@@ -141,6 +141,18 @@ describe("DiscordMessageParser", () => {
             result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal("hey @room!");
             expect(result.formattedBody).is.equal("hey @room!");
+        });
+        it("replaces blockquotes correctly", async () => {
+            const mp = new DiscordMessageParser();
+            let msg = getMessage("> quote\nfox");
+            let result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal("> quote\nfox");
+            expect(result.formattedBody).is.equal("<blockquote>quote<br></blockquote>fox");
+
+            msg = getMessage("text\n>>> quote\nmultiline", false, true);
+            result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal("text\n>>> quote\nmultiline");
+            expect(result.formattedBody).is.equal("text<br><blockquote>quote<br>multiline</blockquote>");
         });
     });
     describe("FormatEmbeds", () => {

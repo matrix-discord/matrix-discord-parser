@@ -187,7 +187,7 @@ export class MatrixMessageParser {
         msg = msg.split("\n").map((s) => {
             return "> " + s;
         }).join("\n");
-        msg = msg + "\n\n";
+        msg = msg + "\n"; // discord quotes don't require an extra new line to end them
         return msg;
     }
 

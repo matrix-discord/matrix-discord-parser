@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/matrix-discord/matrix-discord-parser#readme",
   "dependencies": {
-    "discord-markdown": "git://github.com/Sorunome/discord-markdown#4ac2190a0de21fb75f57d245719cceff982614fd",
+    "discord-markdown": "git://github.com/Sorunome/discord-markdown#6cd4092e0d2155249782535773196d738861eb09",
     "discord.js": "^11.5.1",
     "escape-html": "^1.0.3",
     "escape-string-regexp": "^1.0.5",

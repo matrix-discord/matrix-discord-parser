@@ -26,7 +26,7 @@ function getMessageParserOpts(callbacksSet: any = {}, displayname: string = "Fox
     const callbacks = Object.assign({
         canNotifyRoom: async () => true,
         getChannelId: async (mxid) => mxid.includes("12345") ? "12345" : null,
-        getEmojiId: async (mxid, name) => mxid.includes("real_emote") ? new Discord.Emoji({} as any, {
+        getEmoji: async (mxid, name) => mxid.includes("real_emote") ? new Discord.Emoji({} as any, {
             id: "123456",
             name: "test_emoji",
         }) : null,
@@ -366,19 +366,19 @@ code
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("<blockquote>hey</blockquote>there");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("> hey\n\nthere");
+            expect(result).is.equal("> hey\nthere");
         });
         it("parses double blockquotes", async () => {
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("<blockquote><blockquote>hey</blockquote>you</blockquote>there");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("> > hey\n> \n> you\n\nthere");
+            expect(result).is.equal("> > hey\n> you\nthere");
         });
         it("parses blockquotes with <p>", async () => {
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("<blockquote>\n<p>spoky</p>\n</blockquote>\n<p>test</p>\n");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("> spoky\n\ntest");
+            expect(result).is.equal("> spoky\ntest");
         });
         it("parses double blockquotes with <p>", async () => {
             const mp = new MatrixMessageParser();
@@ -391,7 +391,7 @@ code
 <p>test</p>
 `);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("> > spoky\n> \n> testing\n\ntest");
+            expect(result).is.equal("> > spoky\n> testing\ntest");
         });
     });
     describe("FormatMessage / formatted_body / lists", () => {
