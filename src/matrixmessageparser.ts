@@ -28,7 +28,7 @@ export interface IMatrixMessageParserCallbacks {
     canNotifyRoom: () => Promise<boolean>;
     getUserId: (mxid: string) => Promise<string | null>;
     getChannelId: (mxid: string) => Promise<string | null>;
-    getEmojiId: (mxc: string, name: string) => Promise<Discord.Emoji | null>;
+    getEmoji: (mxc: string, name: string) => Promise<Discord.Emoji | null>;
     mxcUrlToHttp: (mxc: string) => string;
 }
 
@@ -171,7 +171,7 @@ export class MatrixMessageParser {
         const attrs = node.attributes;
         const src = attrs.src || "";
         const name = attrs.alt || attrs.title || "";
-        const emoji = await opts.callbacks.getEmojiId(src, name);
+        const emoji = await opts.callbacks.getEmoji(src, name);
 
         if (!emoji) {
             const content = await this.escapeDiscord(opts, name);
