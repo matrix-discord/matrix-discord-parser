@@ -1,6 +1,6 @@
 {
   "name": "matrix-discord-parser",
-  "version": "0.0.3-1",
+  "version": "0.0.4",
   "description": "A bridge between Matrix and Discord",
   "main": "./lib/src/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/matrix-discord/matrix-discord-parser#readme",
   "dependencies": {
-    "discord-markdown": "git://github.com/Sorunome/discord-markdown#f704cdaba8d6de9c734a27d1f086ff48e7f7387b",
+    "discord-markdown": "git://github.com/Sorunome/discord-markdown#b6e7d67094a846f85ba5b6aa5f0ccf0a6ad02a0b",
     "discord.js": "^11.5.1",
     "escape-html": "^1.0.3",
     "escape-string-regexp": "^1.0.5",

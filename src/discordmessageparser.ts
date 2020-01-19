@@ -85,6 +85,7 @@ export class DiscordMessageParser {
         let contentPostmark = markdown.toHTML(content, {
             discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
             noExtraSpanTags: true,
+            noHighlightCode: true,
         });
 
         // parse the plain text stuff
@@ -93,6 +94,7 @@ export class DiscordMessageParser {
             discordOnly: true,
             escapeHTML: false,
             noExtraSpanTags: true,
+            noHighlightCode: true,
         });
         content = this.InsertEmbeds(opts, content, msg);
         content = await this.InsertMxcImages(opts, content, msg);
@@ -156,6 +158,7 @@ export class DiscordMessageParser {
                     discordOnly: true,
                     escapeHTML: false,
                     noExtraSpanTags: true,
+                    noHighlightCode: true,
                 });
             }
             if (embed.fields) {
@@ -166,6 +169,7 @@ export class DiscordMessageParser {
                         discordOnly: true,
                         escapeHTML: false,
                         noExtraSpanTags: true,
+                        noHighlightCode: true,
                     });
                 }
             }
@@ -178,6 +182,7 @@ export class DiscordMessageParser {
                     discordOnly: true,
                     escapeHTML: false,
                     noExtraSpanTags: true,
+                    noHighlightCode: true,
                 });
             }
             content += embedContent;
@@ -206,6 +211,7 @@ export class DiscordMessageParser {
                     discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
                     embed: true,
                     noExtraSpanTags: true,
+                    noHighlightCode: true,
                 }) + "</p>";
             }
             if (embed.fields) {
@@ -215,6 +221,7 @@ export class DiscordMessageParser {
                         discordCallback: this.getDiscordParseCallbacks(opts, msg),
                         embed: true,
                         noExtraSpanTags: true,
+                        noHighlightCode: true,
                     }) + "</p>";
                 }
             }
@@ -228,6 +235,7 @@ export class DiscordMessageParser {
                     discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
                     embed: true,
                     noExtraSpanTags: true,
+                    noHighlightCode: true,
                 }) + "</p>";
             }
             content += embedContent;

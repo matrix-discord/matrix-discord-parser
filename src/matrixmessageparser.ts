@@ -121,6 +121,7 @@ export class MatrixMessageParser {
         if (language) {
             text = language[1] + text;
         } else if (opts.determineCodeLanguage) {
+            console.log(highlightjs.highlightAuto(text).language);
             text = highlightjs.highlightAuto(text).language + text;
         }
         return text;
