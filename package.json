@@ -25,11 +25,8 @@
     "discord-markdown": "git://github.com/Sorunome/discord-markdown#b6e7d67094a846f85ba5b6aa5f0ccf0a6ad02a0b",
     "discord.js": "^11.5.1",
     "escape-html": "^1.0.3",
-    "escape-string-regexp": "^1.0.5",
     "highlight.js": "^9.17.1",
     "node-html-parser": "^1.1.15",
-    "tslint": "^5.11.0",
-    "typescript": "^3.1.3",
     "unescape-html": "^1.1.0"
   },
   "devDependencies": {
@@ -39,12 +36,13 @@
     "@types/node": "^10.12.0",
     "@types/sqlite3": "^3.1.3",
     "chai": "^3.5.0",
-    "eslint": "^3.8.1",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
     "source-map-support": "^0.5.12",
+    "tslint": "^5.11.0",
     "ts-node": "^8.1.0",
+    "typescript": "^3.1.3",
     "why-is-node-running": "^2.0.3"
   },
   "files": [
