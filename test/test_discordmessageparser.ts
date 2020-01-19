@@ -240,6 +240,34 @@ describe("DiscordMessageParser", () => {
             expect(result.formattedBody).is.equal("message <a href=\"http://example.com\">" +
                 "http://example.com</a>");
         });
+        it("should ignore same-url embeds that are youtu.be", async () => {
+            const mp = new DiscordMessageParser();
+            const msg = getMessage("message https://youtu.be/blah blubb", false, false, [
+                {
+                    author: {} as any,
+                    client: {} as any,
+                    color: {} as any,
+                    createdAt: {} as any,
+                    createdTimestamp: {} as any,
+                    description: "Description",
+                    fields: [] as any,
+                    footer: {} as any,
+                    hexColor: {} as any,
+                    image: {} as any,
+                    message: {} as any,
+                    provider: {} as any,
+                    thumbnail: {} as any,
+                    title: "Title",
+                    type: {} as any,
+                    url: "https://www.youtube.com/watch?v=blah",
+                    video: {} as any,
+                },
+            ]);
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal("message https://youtu.be/blah blubb");
+            expect(result.formattedBody).is.equal("message <a href=\"https://youtu.be/blah\">" +
+                "https://youtu.be/blah</a> blubb");
+        });
     });
     describe("FormatEdit", () => {
         it("should format basic edits appropriately", async () => {

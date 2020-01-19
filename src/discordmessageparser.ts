@@ -376,7 +376,20 @@ export class DiscordMessageParser {
         if (url.substr(url.length - 1) === "/") {
             url = url.substr(0, url.length - 1);
         }
-        return msg.content.includes(url);
+        if (msg.content.includes(url)) {
+            return true;
+        }
+        // alright, let's special-case youtu.be as it is meh
+        // match for youtube URLs the video ID part
+        const matchesFromUrl = url.match(/^https?:\/\/(?:www\.)youtube\.com\/watch\?.*v=([^&]+)/);
+        if (matchesFromUrl) {
+            const matchesFromContent = msg.content.match(/https?:\/\/youtu\.be\/([^\/? ]+)/);
+            if (matchesFromContent && matchesFromUrl[1] === matchesFromContent[1]) {
+                // okay, said youtube link is already in
+                return true;
+            }
+        }
+        return false;
     }
 
     private getDiscordParseCallbacks(opts: IDiscordMessageParserOpts, msg: Discord.Message) {
