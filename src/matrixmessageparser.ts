@@ -18,6 +18,8 @@ import * as Discord from "discord.js";
 import { IMatrixMessage, IMatrixEvent } from "./matrixtypes";
 import * as Parser from "node-html-parser";
 import { Util } from "./util";
+import * as highlightjs from "highlight.js";
+import * as unescapeHtml from "unescape-html";
 
 const MIN_NAME_LENGTH = 2;
 const MAX_NAME_LENGTH = 32;
@@ -36,6 +38,7 @@ export interface IMatrixMessageParserOpts {
     callbacks: IMatrixMessageParserCallbacks;
     displayname: string;
     listDepth?: number;
+    determineCodeLanguage?: boolean;
 }
 
 export class MatrixMessageParser {
@@ -100,6 +103,7 @@ export class MatrixMessageParser {
         let text = node.text;
         const match = text.match(/^<code([^>]*)>/i);
         if (!match) {
+            text = unescapeHtml(text);
             if (text[0] !== "\n") {
                 text = "\n" + text;
             }
@@ -109,12 +113,15 @@ export class MatrixMessageParser {
         text = text.substr(match[0].length);
         // remove </code> closing tag
         text = text.replace(/<\/code>$/i, "");
+        text = unescapeHtml(text);
         if (text[0] !== "\n") {
             text = "\n" + text;
         }
         const language = match[1].match(/language-(\w*)/i);
         if (language) {
             text = language[1] + text;
+        } else if (opts.determineCodeLanguage) {
+            text = highlightjs.highlightAuto(text).language + text;
         }
         return text;
     }

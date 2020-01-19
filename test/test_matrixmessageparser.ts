@@ -142,6 +142,19 @@ code
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result).is.equal("here```js\nis\ncode\n```yay");
         });
+        it("autodetects the language, if enabled", async () => {
+            const mp = new MatrixMessageParser();
+            const msg = getHtmlMessage(`<p>here</p>
+<pre><code>&lt;strong&gt;yay&lt;/strong&gt;
+</code></pre>
+<p>yay</p>`);
+            const opts = getMessageParserOpts();
+            opts.determineCodeLanguage = true;
+            const result = await mp.FormatMessage(opts, msg);
+            expect(result).is.equal(`here\`\`\`xml
+<strong>yay</strong>
+\`\`\`yay`);
+        });
         it("handles linebreaks", async () => {
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("line<br>break");
