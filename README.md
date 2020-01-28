@@ -65,7 +65,7 @@ const msg = { // raw matrix event content
     msgtype: "m.text",
     body: "**blah**",
     format: "org.matrix.custom.html",
-    formatted_body: "<string>blah</strong>",
+    formatted_body: "<strong>blah</strong>",
 };
 
 const parsed = await parser.FormatMessage(opts, msg);
