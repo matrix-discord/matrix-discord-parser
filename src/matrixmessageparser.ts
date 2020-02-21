@@ -20,6 +20,7 @@ import * as Parser from "node-html-parser";
 import { Util } from "./util";
 import * as highlightjs from "highlight.js";
 import * as unescapeHtml from "unescape-html";
+import * as request from "request-promise";
 
 const MIN_NAME_LENGTH = 2;
 const MAX_NAME_LENGTH = 32;
@@ -34,9 +35,25 @@ export interface IMatrixMessageParserCallbacks {
     mxcUrlToHttp: (mxc: string) => string;
 }
 
+export interface IMatrixMessageParserUrlShortener {
+    endpoint?: string;
+    extraBody?: any; // tslint:disable-line no-any
+    urlParameter?: string;
+    shortParameter?: string;
+    method?: string;
+}
+
+const DEFAULT_URL_SHORTENER: IMatrixMessageParserUrlShortener = {
+    endpoint: "https://mau.lu/api/shorten",
+    method: "POST",
+    shortParameter: "short_url",
+    urlParameter: "url",
+};
+
 export interface IMatrixMessageParserOpts {
     callbacks: IMatrixMessageParserCallbacks;
     displayname: string;
+    urlShortener?: IMatrixMessageParserUrlShortener;
     listDepth?: number;
     determineCodeLanguage?: boolean;
 }
@@ -182,8 +199,32 @@ export class MatrixMessageParser {
 
         if (!emoji) {
             const content = await this.escapeDiscord(opts, name);
-            const url = opts.callbacks.mxcUrlToHttp(src);
-            return attrs.src ? `[${content}](${url})` : content;
+            if (!src) {
+                return content;
+            }
+            let url = opts.callbacks.mxcUrlToHttp(src);
+            const shortener = opts.urlShortener || DEFAULT_URL_SHORTENER;
+            if (shortener.endpoint && shortener.urlParameter && shortener.shortParameter) {
+                const body: any = shortener.extraBody || {}; // tslint:disable-line no-any
+                body[shortener.urlParameter] = url;
+                try {
+                    const res = await request({
+                        json: body,
+                        method: shortener.method || "POST",
+                        uri: shortener.endpoint,
+                    });
+                    let resJson: any; // tslint:disable-line no-any
+                    if (typeof res === "string") {
+                        resJson = JSON.parse(res);
+                    } else {
+                        resJson = res;
+                    }
+                    if (typeof resJson[shortener.shortParameter] === "string") {
+                        url = resJson[shortener.shortParameter];
+                    }
+                } catch (err) { } // do nothing
+            }
+            return `[${content} ${url} ]`;
         }
         return `<${emoji.animated ? "a" : ""}:${emoji.name}:${emoji.id}>`;
     }

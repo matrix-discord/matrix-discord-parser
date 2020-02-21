@@ -1,6 +1,6 @@
 {
   "name": "matrix-discord-parser",
-  "version": "0.0.4-1",
+  "version": "0.0.5",
   "description": "A bridge between Matrix and Discord",
   "main": "./lib/src/index.js",
   "scripts": {
@@ -27,6 +27,8 @@
     "escape-html": "^1.0.3",
     "highlight.js": "^9.17.1",
     "node-html-parser": "^1.1.15",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "unescape-html": "^1.1.0"
   },
   "devDependencies": {

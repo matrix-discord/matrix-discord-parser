@@ -312,7 +312,7 @@ code
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("<img alt=\"yay\" src=\"mxc://fake_emote:localhost\">");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("[yay](mxc://fake_emote:localhost)");
+            expect(result).is.equal("[yay mxc://fake_emote:localhost ]");
         });
         it("Ignores images without alt / title / src", async () => {
             const mp = new MatrixMessageParser();
