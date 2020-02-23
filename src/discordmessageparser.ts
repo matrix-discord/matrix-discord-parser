@@ -84,9 +84,9 @@ export class DiscordMessageParser {
         // as else it'll HTML escape the result of the discord syntax
         let contentPostmark = markdown.toHTML(content, {
             discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
+            isBot: msg.author ? msg.author.bot : false,
             noExtraSpanTags: true,
             noHighlightCode: true,
-            isBot: msg.author ? msg.author.bot : false,
         });
 
         // parse the plain text stuff
@@ -94,9 +94,9 @@ export class DiscordMessageParser {
             discordCallback: this.getDiscordParseCallbacks(opts, msg),
             discordOnly: true,
             escapeHTML: false,
+            isBot: msg.author ? msg.author.bot : false,
             noExtraSpanTags: true,
             noHighlightCode: true,
-            isBot: msg.author ? msg.author.bot : false,
         });
         content = this.InsertEmbeds(opts, content, msg);
         content = await this.InsertMxcImages(opts, content, msg);
@@ -149,7 +149,7 @@ export class DiscordMessageParser {
             if (this.isEmbedInBody(opts, msg, embed)) {
                 continue;
             }
-            let embedContent = content ? "\n\n----" : ""; // Horizontal rule. Two to make sure the content doesn't become a title.
+            let embedContent = content ? "\n\n----" : "";
             const embedTitle = embed.url ? `[${embed.title}](${embed.url})` : embed.title;
             if (embedTitle) {
                 embedContent += "\n##### " + embedTitle; // h5 is probably best.
@@ -159,9 +159,9 @@ export class DiscordMessageParser {
                     discordCallback: this.getDiscordParseCallbacks(opts, msg),
                     discordOnly: true,
                     escapeHTML: false,
+                    isBot: msg.author ? msg.author.bot : false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
-                    isBot: msg.author ? msg.author.bot : false,
                 });
             }
             if (embed.fields) {
@@ -171,9 +171,9 @@ export class DiscordMessageParser {
                         discordCallback: this.getDiscordParseCallbacks(opts, msg),
                         discordOnly: true,
                         escapeHTML: false,
+                        isBot: msg.author ? msg.author.bot : false,
                         noExtraSpanTags: true,
                         noHighlightCode: true,
-                        isBot: msg.author ? msg.author.bot : false,
                     });
                 }
             }
@@ -185,9 +185,9 @@ export class DiscordMessageParser {
                     discordCallback: this.getDiscordParseCallbacks(opts, msg),
                     discordOnly: true,
                     escapeHTML: false,
+                    isBot: msg.author ? msg.author.bot : false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
-                    isBot: msg.author ? msg.author.bot : false,
                 });
             }
             content += embedContent;
@@ -198,14 +198,12 @@ export class DiscordMessageParser {
     public InsertEmbedsPostmark(opts: IDiscordMessageParserOpts, content: string, msg: Discord.Message): string {
         for (const embed of msg.embeds) {
             if (embed.title === undefined && embed.description === undefined) {
-                console.log("no title or description!");
                 continue;
             }
             if (this.isEmbedInBody(opts, msg, embed)) {
-                console.log("emgbed is in body!");
                 continue;
             }
-            let embedContent = content ? "<hr>" : ""; // Horizontal rule. Two to make sure the content doesn't become a title.
+            let embedContent = content ? "<hr>" : "";
             const embedTitle = embed.url ?
                 `<a href="${escapeHtml(embed.url)}">${escapeHtml(embed.title)}</a>`
                 : (embed.title ? escapeHtml(embed.title) : undefined);
@@ -217,9 +215,9 @@ export class DiscordMessageParser {
                 embedContent += markdown.toHTML(embed.description, {
                     discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
                     embed: true,
+                    isBot: msg.author ? msg.author.bot : false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
-                    isBot: msg.author ? msg.author.bot : false,
                 }) + "</p>";
             }
             if (embed.fields) {
@@ -228,9 +226,9 @@ export class DiscordMessageParser {
                     embedContent += markdown.toHTML(field.value, {
                         discordCallback: this.getDiscordParseCallbacks(opts, msg),
                         embed: true,
+                        isBot: msg.author ? msg.author.bot : false,
                         noExtraSpanTags: true,
                         noHighlightCode: true,
-                        isBot: msg.author ? msg.author.bot : false,
                     }) + "</p>";
                 }
             }
@@ -243,9 +241,9 @@ export class DiscordMessageParser {
                 embedContent += markdown.toHTML(embed.footer.text, {
                     discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
                     embed: true,
+                    isBot: msg.author ? msg.author.bot : false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
-                    isBot: msg.author ? msg.author.bot : false,
                 }) + "</p>";
             }
             content += embedContent;
