@@ -86,6 +86,7 @@ export class DiscordMessageParser {
             discordCallback: this.getDiscordParseCallbacksHTML(opts, msg),
             noExtraSpanTags: true,
             noHighlightCode: true,
+            isBot: msg.author ? msg.author.bot : false,
         });
 
         // parse the plain text stuff
@@ -95,6 +96,7 @@ export class DiscordMessageParser {
             escapeHTML: false,
             noExtraSpanTags: true,
             noHighlightCode: true,
+            isBot: msg.author ? msg.author.bot : false,
         });
         content = this.InsertEmbeds(opts, content, msg);
         content = await this.InsertMxcImages(opts, content, msg);
@@ -147,7 +149,7 @@ export class DiscordMessageParser {
             if (this.isEmbedInBody(opts, msg, embed)) {
                 continue;
             }
-            let embedContent = "\n\n----"; // Horizontal rule. Two to make sure the content doesn't become a title.
+            let embedContent = content ? "\n\n----" : ""; // Horizontal rule. Two to make sure the content doesn't become a title.
             const embedTitle = embed.url ? `[${embed.title}](${embed.url})` : embed.title;
             if (embedTitle) {
                 embedContent += "\n##### " + embedTitle; // h5 is probably best.
@@ -159,6 +161,7 @@ export class DiscordMessageParser {
                     escapeHTML: false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
+                    isBot: msg.author ? msg.author.bot : false,
                 });
             }
             if (embed.fields) {
@@ -170,6 +173,7 @@ export class DiscordMessageParser {
                         escapeHTML: false,
                         noExtraSpanTags: true,
                         noHighlightCode: true,
+                        isBot: msg.author ? msg.author.bot : false,
                     });
                 }
             }
@@ -183,6 +187,7 @@ export class DiscordMessageParser {
                     escapeHTML: false,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
+                    isBot: msg.author ? msg.author.bot : false,
                 });
             }
             content += embedContent;
@@ -193,12 +198,14 @@ export class DiscordMessageParser {
     public InsertEmbedsPostmark(opts: IDiscordMessageParserOpts, content: string, msg: Discord.Message): string {
         for (const embed of msg.embeds) {
             if (embed.title === undefined && embed.description === undefined) {
+                console.log("no title or description!");
                 continue;
             }
             if (this.isEmbedInBody(opts, msg, embed)) {
+                console.log("emgbed is in body!");
                 continue;
             }
-            let embedContent = "<hr>"; // Horizontal rule. Two to make sure the content doesn't become a title.
+            let embedContent = content ? "<hr>" : ""; // Horizontal rule. Two to make sure the content doesn't become a title.
             const embedTitle = embed.url ?
                 `<a href="${escapeHtml(embed.url)}">${escapeHtml(embed.title)}</a>`
                 : (embed.title ? escapeHtml(embed.title) : undefined);
@@ -212,6 +219,7 @@ export class DiscordMessageParser {
                     embed: true,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
+                    isBot: msg.author ? msg.author.bot : false,
                 }) + "</p>";
             }
             if (embed.fields) {
@@ -222,6 +230,7 @@ export class DiscordMessageParser {
                         embed: true,
                         noExtraSpanTags: true,
                         noHighlightCode: true,
+                        isBot: msg.author ? msg.author.bot : false,
                     }) + "</p>";
                 }
             }
@@ -236,6 +245,7 @@ export class DiscordMessageParser {
                     embed: true,
                     noExtraSpanTags: true,
                     noHighlightCode: true,
+                    isBot: msg.author ? msg.author.bot : false,
                 }) + "</p>";
             }
             content += embedContent;

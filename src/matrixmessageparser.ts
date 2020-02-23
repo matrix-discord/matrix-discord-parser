@@ -103,7 +103,7 @@ export class MatrixMessageParser {
         if (msg.includes("@room") && await opts.callbacks.canNotifyRoom()) {
             msg = msg.replace(/@room/g, "@here");
         }
-        const escapeChars = ["\\", "*", "_", "~", "`", "|"];
+        const escapeChars = ["\\", "*", "_", "~", "`", "|", ":"];
         msg = msg.split(" ").map((s) => {
             if (s.match(/^https?:\/\//)) {
                 return s;

@@ -154,6 +154,20 @@ describe("DiscordMessageParser", () => {
             expect(result.body).is.equal("text\n>>> quote\nmultiline");
             expect(result.formattedBody).is.equal("text<br><blockquote>quote<br>multiline</blockquote>");
         });
+        it("should leave emoji-shortcodes alone for users", async () => {
+            const mp = new DiscordMessageParser();
+            const msg = getMessage(":fox:");
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal(":fox:");
+            expect(result.formattedBody).is.equal(":fox:");
+        });
+        it("should emojify shortcodes for bots", async () => {
+            const mp = new DiscordMessageParser();
+            const msg = getMessage(":fox:", true);
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal("🦊");
+            expect(result.formattedBody).is.equal("🦊");
+        });
     });
     describe("FormatEmbeds", () => {
         it("processes discord-specific markdown correctly", async () => {
@@ -402,8 +416,8 @@ describe("DiscordMessageParser", () => {
                 }),
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("\n\n----\nTestDescription");
-            expect(result.formattedBody).is.equal("<hr><p>TestDescription</p>");
+            expect(result.body).is.equal("\nTestDescription");
+            expect(result.formattedBody).is.equal("<p>TestDescription</p>");
         });
         it("processes urlless embeds properly", async () => {
             const mp = new DiscordMessageParser();
@@ -414,8 +428,8 @@ describe("DiscordMessageParser", () => {
                 }),
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("\n\n----\n##### TestTitle\nTestDescription");
-            expect(result.formattedBody).is.equal("<hr><h5>TestTitle</h5><p>TestDescription</p>");
+            expect(result.body).is.equal("\n##### TestTitle\nTestDescription");
+            expect(result.formattedBody).is.equal("<h5>TestTitle</h5><p>TestDescription</p>");
         });
         it("processes linked embeds properly", async () => {
             const mp = new DiscordMessageParser();
@@ -427,8 +441,8 @@ describe("DiscordMessageParser", () => {
                 }),
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("\n\n----\n##### [TestTitle](testurl)\nTestDescription");
-            expect(result.formattedBody).is.equal("<hr><h5><a href=\"testurl\">" +
+            expect(result.body).is.equal("\n##### [TestTitle](testurl)\nTestDescription");
+            expect(result.formattedBody).is.equal("<h5><a href=\"testurl\">" +
                 "TestTitle</a></h5><p>TestDescription</p>");
         });
         it("rejects titleless and descriptionless embeds", async () => {
@@ -458,15 +472,13 @@ describe("DiscordMessageParser", () => {
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`
-
-----
 ##### [TestTitle](testurl)
 TestDescription
 
 ----
 ##### [TestTitle2](testurl2)
 TestDescription2`);
-            expect(result.formattedBody).is.equal("<hr><h5><a href=\"testurl\">TestTitle" +
+            expect(result.formattedBody).is.equal("<h5><a href=\"testurl\">TestTitle" +
                 "</a></h5><p>TestDescription</p><hr><h5><a href=\"testurl2\">" +
                 "TestTitle2</a></h5><p>TestDescription2</p>");
         });
