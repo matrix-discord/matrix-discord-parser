@@ -6,7 +6,7 @@
     "max-classes-per-file": {
       "severity": "warning"
     },
-    "object-literal-sort-keys": "off",
+    "object-literal-sort-keys": false,
     "no-any": true,
     "arrow-return-shorthand": true,
     "no-magic-numbers": [true, -1, 0, 1, 1000],

@@ -52,10 +52,10 @@ export interface IDiscordMessageParserOpts {
     callbacks: IDiscordMessageParserCallbacks;
 }
 
-export class DiscordMessageParserResult {
-    public formattedBody: string;
-    public body: string;
-    public msgtype: string;
+export interface IDiscordMessageParserResult {
+    formattedBody: string;
+    body: string;
+    msgtype: string;
 }
 
 interface ISpoilerNode {
@@ -75,8 +75,12 @@ export class DiscordMessageParser {
     public async FormatMessage(
         opts: IDiscordMessageParserOpts,
         msg: Discord.Message,
-    ): Promise<DiscordMessageParserResult> {
-        const result = new DiscordMessageParserResult();
+    ): Promise<IDiscordMessageParserResult> {
+        const result: IDiscordMessageParserResult = {
+            body: "",
+            msgtype: "",
+            formattedBody: "",
+        };
 
         let content = msg.content;
 
@@ -120,13 +124,15 @@ export class DiscordMessageParser {
         oldMsg: Discord.Message,
         newMsg: Discord.Message,
         link?: string,
-    ): Promise<DiscordMessageParserResult> {
+    ): Promise<IDiscordMessageParserResult> {
         oldMsg.embeds = []; // we don't want embeds on old msg
         const oldMsgParsed = await this.FormatMessage(opts, oldMsg);
         const newMsgParsed = await this.FormatMessage(opts, newMsg);
-        const result = new DiscordMessageParserResult();
-        result.body = `*edit:* ~~${oldMsgParsed.body}~~ -> ${newMsgParsed.body}`;
-        result.msgtype = newMsgParsed.msgtype;
+        const result: IDiscordMessageParserResult = {
+            body: `*edit:* ~~${oldMsgParsed.body}~~ -> ${newMsgParsed.body}`,
+            msgtype: newMsgParsed.msgtype,
+            formattedBody: "",
+        };
         oldMsg.content = `*edit:* ~~${oldMsg.content}~~ -> ${newMsg.content}`;
         const linkStart = link ? `<a href="${escapeHtml(link)}">` : "";
         const linkEnd = link ? "</a>" : "";
