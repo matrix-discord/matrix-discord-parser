@@ -176,8 +176,8 @@ code
 <h5>tail</h5>
 <h6>foxies</h6>`);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal(`**# fox**
-**## floof**
+            expect(result).is.equal(`**FOX**
+**## FLOOF**
 **### pony**
 **#### hooves**
 **##### tail**

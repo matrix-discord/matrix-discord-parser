@@ -362,9 +362,19 @@ export class MatrixMessageParser {
                 case "h3":
                 case "h4":
                 case "h5":
-                case "h6":
+                case "h6": {
                     const level = parseInt(nodeHtml.tagName[1], 10);
-                    return `**${"#".repeat(level)} ${await this.walkChildNodes(opts, nodeHtml)}**\n`;
+                    let content = await this.walkChildNodes(opts, nodeHtml);
+                    const MAX_UPPERCASE_LEVEL = 2;
+                    if (level <= MAX_UPPERCASE_LEVEL) {
+                        content = content.toUpperCase();
+                    }
+                    let prefix = "";
+                    if (level > 1) {
+                        prefix = "#".repeat(level) + " ";
+                    }
+                    return `**${prefix}${content}**\n`;
+                }
                 case "span":
                     return await this.parseSpanContent(opts, nodeHtml);
                 default:
