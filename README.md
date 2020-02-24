@@ -1,3 +1,4 @@
+[![#discord:half-shot.uk](https://img.shields.io/matrix/discord:half-shot.uk.svg?server_fqdn=matrix.half-shot.uk&label=%23discord:half-shot.uk&logo=matrix)](https://matrix.to/#/#discord:half-shot.uk)
 # matrix-discord-parser
 This package is a message parser for sending messages between [Matrix](https://matrix.org/) and
 [Discord](https://discordapp.com/). For that, it has two parsers: `DiscordMessageParser` and
