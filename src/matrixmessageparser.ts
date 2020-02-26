@@ -104,7 +104,7 @@ export class MatrixMessageParser {
             msg = msg.replace(/@room/g, "@here");
         }
         const escapeChars = ["\\", "*", "_", "~", "`", "|", ":"];
-        msg = msg.split(" ").map((s) => {
+        const escapeDiscordInternal = (s: string): string => {
             if (s.match(/^https?:\/\//)) {
                 return s;
             }
@@ -112,7 +112,13 @@ export class MatrixMessageParser {
                 s = s.replace(new RegExp("\\" + char, "g"), "\\" + char);
             });
             return s;
-        }).join(" ");
+        };
+        const parts: string[] = msg.split(/\s/).map(escapeDiscordInternal);
+        const whitespace = msg.replace(/\S/g, "");
+        msg = parts[0];
+        for (let i = 0; i < whitespace.length; i++) {
+            msg += whitespace[i] + parts[i + 1];
+        }
         return msg;
     }
 

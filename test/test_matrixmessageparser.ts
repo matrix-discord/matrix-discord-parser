@@ -82,6 +82,18 @@ describe("MatrixMessageParser", () => {
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result).is.equal("\\\\ \\* \\_ \\~ \\` \\|");
         });
+        it("leaves URLs alone", async () => {
+            const mp = new MatrixMessageParser();
+            const msg = getPlainMessage("*hey* https://example.org/_blah_");
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result).is.equal("\\*hey\\* https://example.org/_blah_");
+        });
+        it("leaves URLs after line breaks alone", async () => {
+            const mp = new MatrixMessageParser();
+            const msg = getPlainMessage("*hey*\nhttps://example.org/_blah_");
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result).is.equal("\\*hey\\*\nhttps://example.org/_blah_");
+        });
     });
     describe("FormatMessage / formatted_body / simple", () => {
         it("leaves blank stuff untouched", async () => {
