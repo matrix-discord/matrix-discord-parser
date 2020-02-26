@@ -38,7 +38,7 @@ All properties of `IDiscordMessageParserEntity`:
  * `name`: `string`, the name of the entity
  * `mxid`: `string`, the resulting matrix ID of the entity
 
-All properties of `DiscordMessageParserResult`:
+All properties of `IDiscordMessageParserResult`:
  * `body`: `string`, the body of the result
  * `formattedBody`: `string`, the formatted (html) body of the result
  * `msgtype`: `string`, the matrix msgtype of the result
