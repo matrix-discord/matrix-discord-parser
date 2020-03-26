@@ -105,8 +105,9 @@ export class MatrixMessageParser {
         }
         const escapeChars = ["\\", "*", "_", "~", "`", "|", ":"];
         const escapeDiscordInternal = (s: string): string => {
-            if (s.match(/^https?:\/\//)) {
-                return s;
+            const match = s.match(/\bhttps?:\/\//);
+            if (match) {
+                return escapeDiscordInternal(s.substring(0, match.index)) + s.substring(match.index as number);
             }
             escapeChars.forEach((char) => {
                 s = s.replace(new RegExp("\\" + char, "g"), "\\" + char);
