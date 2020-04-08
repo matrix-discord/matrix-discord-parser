@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as Discord from "discord.js";
+import { IDiscordEmoji } from "./discordtypes";
 import { IMatrixMessage, IMatrixEvent } from "./matrixtypes";
 import * as Parser from "node-html-parser";
 import { Util } from "./util";
@@ -31,7 +31,7 @@ export interface IMatrixMessageParserCallbacks {
     canNotifyRoom: () => Promise<boolean>;
     getUserId: (mxid: string) => Promise<string | null>;
     getChannelId: (mxid: string) => Promise<string | null>;
-    getEmoji: (mxc: string, name: string) => Promise<Discord.Emoji | null>;
+    getEmoji: (mxc: string, name: string) => Promise<IDiscordEmoji | null>;
     mxcUrlToHttp: (mxc: string) => string;
 }
 

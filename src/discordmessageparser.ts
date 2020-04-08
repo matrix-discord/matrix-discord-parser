@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as Discord from "discord.js";
+import { IDiscordMessage, IDiscordMessageEmbed } from "./discordtypes";
 import * as markdown from "discord-markdown";
 import * as escapeHtml from "escape-html";
 import { Util } from "./util";
@@ -74,7 +74,7 @@ interface IEmojiNode extends IDiscordNode {
 export class DiscordMessageParser {
     public async FormatMessage(
         opts: IDiscordMessageParserOpts,
-        msg: Discord.Message,
+        msg: IDiscordMessage,
     ): Promise<IDiscordMessageParserResult> {
         const result: IDiscordMessageParserResult = {
             body: "",
@@ -121,8 +121,8 @@ export class DiscordMessageParser {
 
     public async FormatEdit(
         opts: IDiscordMessageParserOpts,
-        oldMsg: Discord.Message,
-        newMsg: Discord.Message,
+        oldMsg: IDiscordMessage,
+        newMsg: IDiscordMessage,
         link?: string,
     ): Promise<IDiscordMessageParserResult> {
         oldMsg.embeds = []; // we don't want embeds on old msg
@@ -147,7 +147,7 @@ export class DiscordMessageParser {
         return result;
     }
 
-    public InsertEmbeds(opts: IDiscordMessageParserOpts, content: string, msg: Discord.Message): string {
+    public InsertEmbeds(opts: IDiscordMessageParserOpts, content: string, msg: IDiscordMessage): string {
         for (const embed of msg.embeds) {
             if (embed.title === undefined && embed.description === undefined) {
                 continue;
@@ -201,7 +201,7 @@ export class DiscordMessageParser {
         return content;
     }
 
-    public InsertEmbedsPostmark(opts: IDiscordMessageParserOpts, content: string, msg: Discord.Message): string {
+    public InsertEmbedsPostmark(opts: IDiscordMessageParserOpts, content: string, msg: IDiscordMessage): string {
         for (const embed of msg.embeds) {
             if (embed.title === undefined && embed.description === undefined) {
                 continue;
@@ -257,7 +257,7 @@ export class DiscordMessageParser {
         return content;
     }
 
-    public InsertUser(opts: IDiscordMessageParserOpts, node: IDiscordNode, msg: Discord.Message): string {
+    public InsertUser(opts: IDiscordMessageParserOpts, node: IDiscordNode, msg: IDiscordMessage): string {
         // unfortunately these callbacks are sync, so we flag our channel with some special stuff
         // and later on grab the real channel pill async
         const FLAG = "\x01";
@@ -283,11 +283,11 @@ export class DiscordMessageParser {
     public InsertRole(
         opts: IDiscordMessageParserOpts,
         node: IDiscordNode,
-        msg: Discord.Message,
+        msg: IDiscordMessage,
         html: boolean = false,
     ): string {
         const id = node.id;
-        const role = msg.guild ? msg.guild.roles.get(id) : null;
+        const role = msg.guild ? (msg.guild.roles.resolve || msg.guild.roles.get)!.bind(msg.guild.roles)(id) : null;
         if (!role) {
             return html ? `&lt;@&amp;${id}&gt;` : `<@&${id}>`;
         }
@@ -305,14 +305,14 @@ export class DiscordMessageParser {
         return `${FLAG}emoji${FLAG}${node.name}${FLAG}${node.animated ? 1 : 0}${FLAG}${node.id}${FLAG}`;
     }
 
-    public InsertRoom(opts: IDiscordMessageParserOpts, msg: Discord.Message, def: string): string {
-        return msg.mentions.everyone ? "@room" : def;
+    public InsertRoom(opts: IDiscordMessageParserOpts, msg: IDiscordMessage, def: string): string {
+        return (msg.mentions && msg.mentions.everyone) || msg.mention_everyone ? "@room" : def;
     }
 
     public async InsertMxcImages(
         opts: IDiscordMessageParserOpts,
         content: string,
-        msg: Discord.Message,
+        msg: IDiscordMessage,
         html: boolean = false,
     ): Promise<string> {
         let results = MXC_INSERT_REGEX.exec(content);
@@ -346,7 +346,7 @@ export class DiscordMessageParser {
     public async InsertUserPills(
         opts: IDiscordMessageParserOpts,
         content: string,
-        msg: Discord.Message,
+        msg: IDiscordMessage,
         html: boolean = false,
     ): Promise<string> {
         let results = USER_INSERT_REGEX.exec(content);
@@ -369,7 +369,7 @@ export class DiscordMessageParser {
     public async InsertChannelPills(
         opts: IDiscordMessageParserOpts,
         content: string,
-        msg: Discord.Message,
+        msg: IDiscordMessage,
         html: boolean = false,
     ): Promise<string> {
         let results = CHANNEL_INSERT_REGEX.exec(content);
@@ -390,7 +390,7 @@ export class DiscordMessageParser {
         return content;
     }
 
-    private isEmbedInBody(opts: IDiscordMessageParserOpts, msg: Discord.Message, embed: Discord.MessageEmbed): boolean {
+    private isEmbedInBody(opts: IDiscordMessageParserOpts, msg: IDiscordMessage, embed: IDiscordMessageEmbed): boolean {
         if (!embed.url) {
             return false;
         }
@@ -414,7 +414,7 @@ export class DiscordMessageParser {
         return false;
     }
 
-    private getDiscordParseCallbacks(opts: IDiscordMessageParserOpts, msg: Discord.Message) {
+    private getDiscordParseCallbacks(opts: IDiscordMessageParserOpts, msg: IDiscordMessage) {
         return {
             channel: (node) => this.InsertChannel(opts, node), // are post-inserted
             emoji: (node) => this.InsertEmoji(opts, node), // are post-inserted
@@ -426,7 +426,7 @@ export class DiscordMessageParser {
         };
     }
 
-    private getDiscordParseCallbacksHTML(opts: IDiscordMessageParserOpts, msg: Discord.Message) {
+    private getDiscordParseCallbacksHTML(opts: IDiscordMessageParserOpts, msg: IDiscordMessage) {
         return {
             channel: (node) => this.InsertChannel(opts, node), // are post-inserted
             emoji: (node) => this.InsertEmoji(opts, node), // are post-inserted

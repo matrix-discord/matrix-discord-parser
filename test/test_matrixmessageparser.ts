@@ -17,7 +17,6 @@ limitations under the License.
 import "mocha";
 import { expect } from "chai";
 import { MatrixMessageParser } from "../src/matrixmessageparser";
-import * as Discord from "discord.js";
 
 // we are a test file and thus need those
 /* tslint:disable:no-unused-expression max-file-line-count no-any */
@@ -26,10 +25,11 @@ function getMessageParserOpts(callbacksSet: any = {}, displayname: string = "Fox
     const callbacks = Object.assign({
         canNotifyRoom: async () => true,
         getChannelId: async (mxid) => mxid.includes("12345") ? "12345" : null,
-        getEmoji: async (mxid, name) => mxid.includes("real_emote") ? new Discord.Emoji({} as any, {
+        getEmoji: async (mxid, name) => mxid.includes("real_emote") ? {
             id: "123456",
             name: "test_emoji",
-        }) : null,
+            animated: false,
+        } : null,
         getUserId: async (mxid) => mxid.includes("12345") ? "12345" : null,
         mxcUrlToHttp: (mxc) => mxc,
     }, callbacksSet);

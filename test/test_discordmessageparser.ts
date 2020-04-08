@@ -17,7 +17,7 @@ limitations under the License.
 import "mocha";
 import { expect } from "chai";
 import { DiscordMessageParser } from "../src/discordmessageparser";
-import * as Discord from "discord.js";
+import { IDiscordRole, IDiscordGuild, IDiscordMessageEmbed, IDiscordMessage } from "../src/discordtypes";
 
 // we are a test file and thus need those
 /* tslint:disable:no-unused-expression max-file-line-count no-any */
@@ -50,34 +50,29 @@ function getMessageParserOpts(callbacksSet: any = {}) {
 }
 
 function getMessage(str: string, bot: boolean = false, mentionEveryone: boolean = false, embeds: any[] = []) {
-    const guild = new Discord.Guild({
-        resolver: {
-            resolveGuildMember: (a, b) => undefined,
-        },
-    } as any, {
-        emojis: [],
+    const guild: IDiscordGuild = {
         id: "1234",
-    });
-    const role = new Discord.Role(guild, {
+        roles: new Map<string, IDiscordRole>(),
+    };
+    const role: IDiscordRole = {
         color: 0x123456,
         id: "123456",
         name: "Fox Lover",
-    });
-    guild.roles.set("123456", role);
-    const author = new Discord.User({} as any, {
+    };
+    (guild.roles as any).set("123456", role);
+    const author = {
         bot,
-    });
-    const channel = new Discord.TextChannel(guild, {} as any);
-    const msg = new Discord.Message(channel, {
-        attachments: [],
+    };
+    const msg: IDiscordMessage = {
+        id: "123456789",
         content: str,
         embeds,
-        mention_everyone: mentionEveryone,
-    }, {
-        dataManager: {
-            newUser: (a, b) => author,
+        mentions: {
+            everyone: mentionEveryone,
         },
-    } as any);
+        author,
+        guild,
+    };
     return msg;
 }
 
@@ -411,9 +406,9 @@ describe("DiscordMessageParser", () => {
         it("processes discord-specific markdown correctly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal("\nTestDescription");
@@ -422,10 +417,10 @@ describe("DiscordMessageParser", () => {
         it("processes urlless embeds properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     title: "TestTitle",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal("\n##### TestTitle\nTestDescription");
@@ -434,11 +429,11 @@ describe("DiscordMessageParser", () => {
         it("processes linked embeds properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     title: "TestTitle",
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal("\n##### [TestTitle](testurl)\nTestDescription");
@@ -448,9 +443,9 @@ describe("DiscordMessageParser", () => {
         it("rejects titleless and descriptionless embeds", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("Some content...", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal("Some content...");
@@ -459,16 +454,16 @@ describe("DiscordMessageParser", () => {
         it("processes multiple embeds properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     title: "TestTitle",
                     url: "testurl",
-                }),
-                new Discord.MessageEmbed({} as any, {
+                },
+                {
                     description: "TestDescription2",
                     title: "TestTitle2",
                     url: "testurl2",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`
@@ -485,11 +480,11 @@ TestDescription2`);
         it("inserts embeds properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("Content that goes in the message", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     title: "TestTitle",
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`Content that goes in the message
@@ -503,7 +498,7 @@ TestDescription`);
         it("adds fields properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("Content that goes in the message", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     fields: [{
                         inline: false,
@@ -512,7 +507,7 @@ TestDescription`);
                     }],
                     title: "TestTitle",
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`Content that goes in the message
@@ -529,14 +524,14 @@ floof`);
         it("adds images properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("Content that goes in the message", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     image: {
                         url: "http://example.com",
                     },
                     title: "TestTitle",
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`Content that goes in the message
@@ -552,14 +547,14 @@ Image: http://example.com`);
         it("adds a footer properly", async () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("Content that goes in the message", false, false, [
-                new Discord.MessageEmbed({} as any, {
+                {
                     description: "TestDescription",
                     footer: {
                         text: "footer",
                     },
                     title: "TestTitle",
                     url: "testurl",
-                }),
+                },
             ]);
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(`Content that goes in the message
