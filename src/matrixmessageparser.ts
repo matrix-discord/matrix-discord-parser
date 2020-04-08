@@ -20,7 +20,7 @@ import * as Parser from "node-html-parser";
 import { Util } from "./util";
 import * as highlightjs from "highlight.js";
 import * as unescapeHtml from "unescape-html";
-import * as request from "request-promise";
+import got from "got";
 
 const MIN_NAME_LENGTH = 2;
 const MAX_NAME_LENGTH = 32;
@@ -215,11 +215,11 @@ export class MatrixMessageParser {
                 const body: any = shortener.extraBody || {}; // tslint:disable-line no-any
                 body[shortener.urlParameter] = url;
                 try {
-                    const res = await request({
+                    const res = await got({
                         json: body,
-                        method: shortener.method || "POST",
-                        uri: shortener.endpoint,
-                    });
+                        method: shortener.method as any || "POST", // tslint:disable-line no-any
+                        url: shortener.endpoint,
+                    }).json();
                     let resJson: any; // tslint:disable-line no-any
                     if (typeof res === "string") {
                         resJson = JSON.parse(res);
