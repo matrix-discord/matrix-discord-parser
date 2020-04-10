@@ -94,6 +94,7 @@ export class MatrixMessageParser {
     }
 
     private async escapeDiscord(opts: IMatrixMessageParserOpts, msg: string): Promise<string> {
+        msg = unescapeHtml(msg);
         // \u200B is the zero-width space --> they still look the same but don't mention
         msg = msg.replace(/@everyone/g, "@\u200Beveryone");
         msg = msg.replace(/@here/g, "@\u200Bhere");
