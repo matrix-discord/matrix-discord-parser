@@ -366,7 +366,7 @@ describe("DiscordMessageParser", () => {
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(":fox:");
             expect(result.formattedBody).is.equal(
-                "<img alt=\"fox\" title=\"fox\" height=\"32\" src=\"mxc://localhost/fox\" />");
+                "<img alt=\":fox:\" title=\":fox:\" height=\"32\" src=\"mxc://localhost/fox\" />");
         });
         it("processes double-emoji correctly", async () => {
             const mp = new DiscordMessageParser();
@@ -374,8 +374,8 @@ describe("DiscordMessageParser", () => {
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result.body).is.equal(":fox: :fox:");
             expect(result.formattedBody).is.equal(
-                "<img alt=\"fox\" title=\"fox\" height=\"32\" src=\"mxc://localhost/fox\" /> " +
-                "<img alt=\"fox\" title=\"fox\" height=\"32\" src=\"mxc://localhost/fox\" />");
+                "<img alt=\":fox:\" title=\":fox:\" height=\"32\" src=\"mxc://localhost/fox\" /> " +
+                "<img alt=\":fox:\" title=\":fox:\" height=\"32\" src=\"mxc://localhost/fox\" />");
         });
         it("processes unknown channel correctly", async () => {
             const mp = new DiscordMessageParser();

@@ -325,7 +325,7 @@ export class DiscordMessageParser {
             const mxcUrl = await opts.callbacks.getEmoji(name, animated, id);
             if (mxcUrl) {
                 if (html) {
-                    replace = `<img alt="${nameHtml}" title="${nameHtml}" ` +
+                    replace = `<img alt=":${nameHtml}:" title=":${nameHtml}:" ` +
                         `height="${EMOJI_SIZE}" src="${mxcUrl}" />`;
                 } else {
                     replace = `:${name}:`;
