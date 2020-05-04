@@ -104,7 +104,7 @@ export class MatrixMessageParser {
         if (msg.includes("@room") && await opts.callbacks.canNotifyRoom()) {
             msg = msg.replace(/@room/g, "@here");
         }
-        const escapeChars = ["\\", "*", "_", "~", "`", "|", ":"];
+        const escapeChars = ["\\", "*", "_", "~", "`", "|", ":", "<", ">"];
         const escapeDiscordInternal = (s: string): string => {
             const match = s.match(/\bhttps?:\/\//);
             if (match) {
