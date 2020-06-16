@@ -349,9 +349,11 @@ export class MatrixMessageParser {
                 case "b":
                     return `**${await this.walkChildNodes(opts, nodeHtml)}**`;
                 case "u":
+                case "ins":
                     return `__${await this.walkChildNodes(opts, nodeHtml)}__`;
                 case "del":
                 case "strike":
+                case "s":
                     return `~~${await this.walkChildNodes(opts, nodeHtml)}~~`;
                 case "code":
                     return `\`${nodeHtml.text}\``;
