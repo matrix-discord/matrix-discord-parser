@@ -319,8 +319,15 @@ export class MatrixMessageParser {
 
     private async walkChildNodes(opts: IMatrixMessageParserOpts, node: Parser.Node): Promise<string> {
         let reply = "";
+        let lastTag = "";
         await Util.AsyncForEach(node.childNodes, async (child) => {
+            const thisTag = child.nodeType === Parser.NodeType.ELEMENT_NODE
+                ? (child as Parser.HTMLElement).tagName : "";
+            if (thisTag === "p" && lastTag === "p") {
+                reply += "\n\n";
+            }
             reply += await this.walkNode(opts, child);
+            lastTag = thisTag;
         });
         return reply;
     }

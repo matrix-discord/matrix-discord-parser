@@ -207,6 +207,12 @@ code
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result).is.equal("bunny");
         });
+        it("formats p tags", async () => {
+            const mp = new MatrixMessageParser();
+            const msg = getHtmlMessage("<p>1</p><p>2</p>");
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result).is.equal("1\n\n2");
+        });
     });
     describe("FormatMessage / formatted_body / complex", () => {
         it("html unescapes stuff inside of code", async () => {
