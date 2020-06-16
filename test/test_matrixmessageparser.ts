@@ -132,11 +132,11 @@ describe("MatrixMessageParser", () => {
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result).is.equal("to be __underlined__ or not to be?");
         });
-        it("converts underline formatting", async () => {
+        it("converts del formatting", async () => {
             const mp = new MatrixMessageParser();
-            const msg = getHtmlMessage("does <del>this text</del> exist?");
+            const msg = getHtmlMessage("does <del>this text</del> exist <strike>today</strike>?");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("does ~~this text~~ exist?");
+            expect(result).is.equal("does ~~this text~~ exist ~~today~~?");
         });
         it("converts code", async () => {
             const mp = new MatrixMessageParser();
