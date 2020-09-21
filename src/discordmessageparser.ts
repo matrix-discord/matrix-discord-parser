@@ -326,7 +326,7 @@ export class DiscordMessageParser {
             if (mxcUrl) {
                 if (html) {
                     replace = `<img alt=":${nameHtml}:" title=":${nameHtml}:" ` +
-                        `height="${EMOJI_SIZE}" src="${mxcUrl}" />`;
+                        `height="${EMOJI_SIZE}" src="${mxcUrl}" data-mx-emoticon />`;
                 } else {
                     replace = `:${name}:`;
                 }
