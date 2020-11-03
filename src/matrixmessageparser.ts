@@ -68,10 +68,7 @@ export class MatrixMessageParser {
         opts.listDepth = 0;
         let reply = "";
         if (msg.formatted_body) {
-            // parser needs everything wrapped in html elements
-            // so we wrap everything in <div> just to be sure stuff is wrapped
-            // as <div> will be un-touched anyways
-            const parsed = Parser.parse(`<div>${msg.formatted_body}</div>`, {
+            const parsed = Parser.parse(msg.formatted_body, {
                 lowerCaseTagName: true,
                 pre: true,
             // tslint:disable-next-line no-any
@@ -264,7 +261,7 @@ export class MatrixMessageParser {
 
     private async parseUlContent(opts: IMatrixMessageParserOpts, node: Parser.HTMLElement): Promise<string> {
         this.listDepth++;
-        const entries = await this.arrayChildNodes(opts, node, ["li"]);
+        const entries = await this.arrayChildNodes(opts, node, ["LI"]);
         this.listDepth--;
         const bulletPoint = this.listBulletPoints[this.listDepth % this.listBulletPoints.length];
 
@@ -280,7 +277,7 @@ export class MatrixMessageParser {
 
     private async parseOlContent(opts: IMatrixMessageParserOpts, node: Parser.HTMLElement): Promise<string> {
         this.listDepth++;
-        const entries = await this.arrayChildNodes(opts, node, ["li"]);
+        const entries = await this.arrayChildNodes(opts, node, ["LI"]);
         this.listDepth--;
         let entry = 0;
         const attrs = node.attributes;
@@ -323,7 +320,7 @@ export class MatrixMessageParser {
         await Util.AsyncForEach(node.childNodes, async (child) => {
             const thisTag = child.nodeType === Parser.NodeType.ELEMENT_NODE
                 ? (child as Parser.HTMLElement).tagName : "";
-            if (thisTag === "p" && lastTag === "p") {
+            if (thisTag === "P" && lastTag === "P") {
                 reply += "\n\n";
             }
             reply += await this.walkNode(opts, child);
@@ -342,45 +339,45 @@ export class MatrixMessageParser {
         } else if (node.nodeType === Parser.NodeType.ELEMENT_NODE) {
             const nodeHtml = node as Parser.HTMLElement;
             switch (nodeHtml.tagName) {
-                case "em":
-                case "i":
+                case "EM":
+                case "I":
                     return `*${await this.walkChildNodes(opts, nodeHtml)}*`;
-                case "strong":
-                case "b":
+                case "STRONG":
+                case "B":
                     return `**${await this.walkChildNodes(opts, nodeHtml)}**`;
-                case "u":
-                case "ins":
+                case "U":
+                case "INS":
                     return `__${await this.walkChildNodes(opts, nodeHtml)}__`;
-                case "del":
-                case "strike":
-                case "s":
+                case "DEL":
+                case "STRIKE":
+                case "S":
                     return `~~${await this.walkChildNodes(opts, nodeHtml)}~~`;
-                case "code":
+                case "CODE":
                     return `\`${nodeHtml.text}\``;
-                case "pre":
+                case "PRE":
                     return `\`\`\`${this.parsePreContent(opts, nodeHtml)}\`\`\``;
-                case "a":
+                case "A":
                     return await this.parsePillContent(opts, nodeHtml);
-                case "img":
+                case "IMG":
                     return await this.parseImageContent(opts, nodeHtml);
-                case "br":
+                case "BR":
                     return "\n";
-                case "blockquote":
+                case "BLOCKQUOTE":
                     return await this.parseBlockquoteContent(opts, nodeHtml);
-                case "ul":
+                case "UL":
                     return await this.parseUlContent(opts, nodeHtml);
-                case "ol":
+                case "OL":
                     return await this.parseOlContent(opts, nodeHtml);
-                case "mx-reply":
+                case "MX-REPLY":
                     return "";
-                case "hr":
+                case "HR":
                     return "\n----------\n";
-                case "h1":
-                case "h2":
-                case "h3":
-                case "h4":
-                case "h5":
-                case "h6": {
+                case "H1":
+                case "H2":
+                case "H3":
+                case "H4":
+                case "H5":
+                case "H6": {
                     const level = parseInt(nodeHtml.tagName[1], 10);
                     let content = await this.walkChildNodes(opts, nodeHtml);
                     const MAX_UPPERCASE_LEVEL = 2;
@@ -393,7 +390,7 @@ export class MatrixMessageParser {
                     }
                     return `**${prefix}${content}**\n`;
                 }
-                case "span":
+                case "SPAN":
                     return await this.parseSpanContent(opts, nodeHtml);
                 default:
                     return await this.walkChildNodes(opts, nodeHtml);

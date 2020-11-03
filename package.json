@@ -26,7 +26,7 @@
     "escape-html": "^1.0.3",
     "got": "^11.6.0",
     "highlight.js": "^9.18.1",
-    "node-html-parser": "^1.2.15",
+    "node-html-parser": "^1.4.5",
     "unescape-html": "^1.1.0"
   },
   "devDependencies": {
