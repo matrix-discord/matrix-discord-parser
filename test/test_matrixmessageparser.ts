@@ -275,6 +275,12 @@ code
             const result = await mp.FormatMessage(defaultOpts, msg);
             expect(result).is.equal("http://example.com/_blah_/");
         });
+        it("should handle multiple quotes within a message", async () => {
+            const mp = new MatrixMessageParser();
+            const msg = getHtmlMessage("<blockquote>\n<p>Here is something</p>\n</blockquote>\n<p>That sure is a cool something</p>\n<blockquote>\n<p>Here is something else!</p>\n</blockquote>\n<p>Oh no, I wasn't expecting that</p>\n");
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result).is.equal("> Here is something\nThat sure is a cool something\n> Here is something else!\nOh no, I wasn't expecting that");
+        });
     });
     describe("FormatMessage / formatted_body / discord", () => {
         it("Parses user pills", async () => {
@@ -516,7 +522,7 @@ code
 <li>test more</li>
 </ol>`);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("\n5. test\n6. test more");
+            expect(result).is.equal("5. test\n6. test more");
         });
         it("parses ul in ol", async () => {
             const mp = new MatrixMessageParser();
@@ -530,7 +536,7 @@ code
 </li>
 </ol>`);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("\n1. test\n2. test more\n    ○ asdf\n    ○ jklö");
+            expect(result).is.equal("1. test\n2. test more\n    ○ asdf\n    ○ jklö");
         });
         it("parses ol in ul", async () => {
             const mp = new MatrixMessageParser();
@@ -544,7 +550,7 @@ code
 </li>
 </ul>`);
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("\n● test\n● test more\n    1. asdf\n    2. jklö");
+            expect(result).is.equal("● test\n● test more\n    1. asdf\n    2. jklö");
         });
     });
 });

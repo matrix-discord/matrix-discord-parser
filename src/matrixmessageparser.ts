@@ -58,6 +58,9 @@ export interface IMatrixMessageParserOpts {
     determineCodeLanguage?: boolean;
 }
 
+// these are the tags that are supposed to act like block tag markdown forming on the *discord* side
+const BLOCK_TAGS = ["BLOCKQUOTE", "UL", "OL", "H1", "H2", "H3", "H4", "H5", "H6"];
+
 export class MatrixMessageParser {
     private listDepth: number = 0;
     private listBulletPoints: string[] = ["●", "○", "■", "‣"];
@@ -270,7 +273,7 @@ export class MatrixMessageParser {
         }).join("\n");
 
         if (this.listDepth === 0) {
-            msg = `\n${msg}\n\n`;
+            msg = `${msg}\n\n`;
         }
         return msg;
     }
@@ -291,7 +294,7 @@ export class MatrixMessageParser {
         }).join("\n");
 
         if (this.listDepth === 0) {
-            msg = `\n${msg}\n\n`;
+            msg = `${msg}\n\n`;
         }
         return msg;
     }
@@ -322,6 +325,8 @@ export class MatrixMessageParser {
                 ? (child as Parser.HTMLElement).tagName : "";
             if (thisTag === "P" && lastTag === "P") {
                 reply += "\n\n";
+            } else if (BLOCK_TAGS.includes(thisTag) && reply && reply[reply.length - 1] !== "\n") {
+                reply += "\n";
             }
             reply += await this.walkNode(opts, child);
             lastTag = thisTag;
