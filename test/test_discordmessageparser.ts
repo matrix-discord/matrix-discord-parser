@@ -328,7 +328,7 @@ describe("DiscordMessageParser", () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("<@12345>");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("foxies");
+            expect(result.body).is.equal("foxies (@_discord_12345:localhost)");
             expect(result.formattedBody).is.equal(
                 "<a href=\"https://matrix.to/#/@_discord_12345:localhost\">foxies</a>");
         });

@@ -356,7 +356,7 @@ export class DiscordMessageParser {
             let replace = "";
             if (user) {
                 replace = html ? `<a href="${MATRIX_TO_LINK}${escapeHtml(user.mxid)}">` +
-                    `${escapeHtml(user.name)}</a>` : user.name;
+                    `${escapeHtml(user.name)}</a>` : `${user.name} (${user.mxid})`;
             } else {
                 replace = html ? `&lt;@${escapeHtml(id)}&gt;` : `<@${id}>`;
             }
