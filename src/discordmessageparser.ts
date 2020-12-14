@@ -160,6 +160,9 @@ export class DiscordMessageParser {
             if (embedTitle) {
                 embedContent += "\n##### " + embedTitle; // h5 is probably best.
             }
+            if (embed.author && embed.author.name) {
+                embedContent += `\n**${escapeHtml(embed.author.name)}**`
+            }
             if (embed.description) {
                 embedContent += "\n" + markdown.toHTML(embed.description, {
                     discordCallback: this.getDiscordParseCallbacks(opts, msg),
@@ -215,6 +218,9 @@ export class DiscordMessageParser {
                 : (embed.title ? escapeHtml(embed.title) : undefined);
             if (embedTitle) {
                 embedContent += `<h5>${embedTitle}</h5>`; // h5 is probably best.
+            }
+            if (embed.author && embed.author.name) {
+                embedContent += `<strong>${escapeHtml(embed.author.name)}</strong><br>`
             }
             if (embed.description) {
                 embedContent += "<p>";

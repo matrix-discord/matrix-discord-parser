@@ -566,6 +566,25 @@ footer`);
             expect(result.formattedBody).is.equal("Content that goes in the message<hr>" +
                 "<h5><a href=\"testurl\">TestTitle</a></h5><p>TestDescription</p><p>footer</p>");
         });
+        it("adds an author properly", async () => {
+            const mp = new DiscordMessageParser();
+            const msg = getMessage("Content that goes in the message", false, false, [
+                {
+                    description: "TestDescription",
+                    author: {
+                        name: "Foxies",
+                    },
+                },
+            ]);
+            const result = await mp.FormatMessage(defaultOpts, msg);
+            expect(result.body).is.equal(`Content that goes in the message
+
+----
+**Foxies**
+TestDescription`);
+            expect(result.formattedBody).is.equal("Content that goes in the message<hr>" +
+                "<strong>Foxies</strong><br><p>TestDescription</p>");
+        });
     });
     describe("Message Type", () => {
         it("sets non-bot messages as m.text", async () => {
