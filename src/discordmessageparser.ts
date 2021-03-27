@@ -274,7 +274,7 @@ export class DiscordMessageParser {
         // matrix spoilers are still in MSC stage
         // see https://github.com/matrix-org/matrix-doc/pull/2010
         if (!html) {
-            return `(Spoiler: ${node.content})`;
+            return `(Spoiler (rot13): ${Util.Rot13(node.content)})`;
         }
         return `<span data-mx-spoiler>${node.content}</span>`;
     }
