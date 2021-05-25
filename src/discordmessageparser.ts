@@ -46,6 +46,7 @@ export interface IDiscordMessageParserCallbacks {
     getUser: (id: string) => Promise<IDiscordMessageParserEntity | null>;
     getChannel: (id: string) => Promise<IDiscordMessageParserEntity | null>;
     getEmoji: (name: string, animated: boolean, id: string) => Promise<string | null>;
+    getReference: (id: string) => Promise<IDiscordMessage | null>;
 }
 
 export interface IDiscordMessageParserOpts {
@@ -75,6 +76,7 @@ export class DiscordMessageParser {
     public async FormatMessage(
         opts: IDiscordMessageParserOpts,
         msg: IDiscordMessage,
+        replying: boolean = false
     ): Promise<IDiscordMessageParserResult> {
         const result: IDiscordMessageParserResult = {
             body: "",
@@ -102,12 +104,14 @@ export class DiscordMessageParser {
             noExtraSpanTags: true,
             noHighlightCode: true,
         });
+        if (!replying) content = await this.InsertReply(opts, content, msg);
         content = this.InsertEmbeds(opts, content, msg);
         content = await this.InsertMxcImages(opts, content, msg);
         content = await this.InsertUserPills(opts, content, msg);
         content = await this.InsertChannelPills(opts, content, msg);
 
         // parse postmark stuff
+        if (!replying) contentPostmark = await this.InsertReplyPostmark(opts, contentPostmark, msg);
         contentPostmark = this.InsertEmbedsPostmark(opts, contentPostmark, msg);
         contentPostmark = await this.InsertMxcImages(opts, contentPostmark, msg, true);
         contentPostmark = await this.InsertUserPills(opts, contentPostmark, msg, true);
@@ -393,6 +397,42 @@ export class DiscordMessageParser {
             content = content.replace(results[0], replace);
             results = CHANNEL_INSERT_REGEX.exec(content);
         }
+        return content;
+    }
+
+    public async InsertReply(
+        opts: IDiscordMessageParserOpts,
+        content: string,
+        msg: IDiscordMessage,
+    ): Promise<string> {
+        if (!msg.reference) {
+            return content;
+        }
+        const reply = await opts.callbacks.getReference(msg.reference.messageID);
+        if (!reply) {
+            return content;
+        }
+        const parsed_reply = await this.FormatMessage(opts, reply, true);
+        content = `>  ${parsed_reply.body}\n\n${content}`;
+        return content;
+    }
+
+    public async InsertReplyPostmark(
+        opts: IDiscordMessageParserOpts,
+        content: string,
+        msg: IDiscordMessage,
+    ): Promise<string> {
+        if (!msg.reference) {
+            return content;
+        }
+        const reply = await opts.callbacks.getReference(msg.reference.messageID);
+        if (!reply) {
+            return content;
+        }
+        const parsed_reply = await this.FormatMessage(opts, reply, true);
+        // HACK! Doesn't resolve a username of a Matrix user into a pill, only Discord->Matrix.
+        const user_pill = reply.webhookID == null ? this.InsertUser(opts, {"id": reply.author.id}, reply) : reply.author.username;
+        content = `<mx-reply><blockquote><a>In reply to</a> ${user_pill}<br>${parsed_reply.formattedBody}</blockquote></mx-reply>${content}`;
         return content;
     }
 

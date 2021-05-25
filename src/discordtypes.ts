@@ -75,8 +75,14 @@ export interface IDiscordMessage {
     };
     author: {
         bot: boolean;
+        id: string;
+        username: string;
     };
+    reference: {
+        messageID: string;
+    } | null;
     guild?: IDiscordGuild | null;
     content: string;
     embeds: IDiscordMessageEmbed[];
+    webhookID: string;
 }
