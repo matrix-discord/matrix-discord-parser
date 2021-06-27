@@ -350,7 +350,7 @@ describe("DiscordMessageParser", () => {
             const mp = new DiscordMessageParser();
             const msg = getMessage("||foxies||");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result.body).is.equal("(Spoiler: foxies)");
+            expect(result.body).is.equal("(Spoiler (rot13): sbkvrf)");
             expect(result.formattedBody).is.equal("<span data-mx-spoiler>foxies</span>");
         });
         it("processes unknown emoji correctly", async () => {
