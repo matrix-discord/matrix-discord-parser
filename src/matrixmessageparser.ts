@@ -187,7 +187,9 @@ export class MatrixMessageParser {
             case "@":
                 // user pill
                 reply = await this.parseUser(opts, id);
-                break;
+                // don't fall back to parseLinkContent, we don't want matrix.to URL previews
+                // for all Matrix mentions of non-Discord users.
+                return reply || await this.walkChildNodes(opts, node);
             case "#":
                 reply = await this.parseChannel(opts, id);
                 break;
