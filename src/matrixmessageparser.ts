@@ -19,7 +19,7 @@ import { IMatrixMessage, IMatrixEvent } from "./matrixtypes";
 import * as Parser from "node-html-parser";
 import { Util } from "./util";
 import * as highlightjs from "highlight.js";
-import * as unescapeHtml from "unescape-html";
+import * as htmlEntities from "html-entities";
 import got from "got";
 
 const MIN_NAME_LENGTH = 2;
@@ -94,7 +94,7 @@ export class MatrixMessageParser {
     }
 
     private async escapeDiscord(opts: IMatrixMessageParserOpts, msg: string): Promise<string> {
-        msg = unescapeHtml(msg);
+        msg = htmlEntities.decode(msg);
         // \u200B is the zero-width space --> they still look the same but don't mention
         msg = msg.replace(/@everyone/g, "@\u200Beveryone");
         msg = msg.replace(/@here/g, "@\u200Bhere");
@@ -128,7 +128,7 @@ export class MatrixMessageParser {
         let text = node.text;
         const match = text.match(/^<code([^>]*)>/i);
         if (!match) {
-            text = unescapeHtml(text);
+            text = htmlEntities.decode(text);
             if (text[0] !== "\n") {
                 text = "\n" + text;
             }
@@ -138,7 +138,7 @@ export class MatrixMessageParser {
         text = text.substr(match[0].length);
         // remove </code> closing tag
         text = text.replace(/<\/code>$/i, "");
-        text = unescapeHtml(text);
+        text = htmlEntities.decode(text);
         if (text[0] !== "\n") {
             text = "\n" + text;
         }

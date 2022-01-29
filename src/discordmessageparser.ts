@@ -16,7 +16,7 @@ limitations under the License.
 
 import { IDiscordMessage, IDiscordMessageEmbed } from "./discordtypes";
 import * as markdown from "discord-markdown";
-import * as escapeHtml from "escape-html";
+import * as htmlEntities from "html-entities";
 import { Util } from "./util";
 
 const MATRIX_TO_LINK = "https://matrix.to/#/";
@@ -134,7 +134,7 @@ export class DiscordMessageParser {
             formattedBody: "",
         };
         oldMsg.content = `*edit:* ~~${oldMsg.content}~~ -> ${newMsg.content}`;
-        const linkStart = link ? `<a href="${escapeHtml(link)}">` : "";
+        const linkStart = link ? `<a href="${htmlEntities.encode(link)}">` : "";
         const linkEnd = link ? "</a>" : "";
         if (oldMsg.content.includes("\n") || newMsg.content.includes("\n")
             || newMsg.content.length > MAX_EDIT_MSG_LENGTH) {
@@ -161,7 +161,7 @@ export class DiscordMessageParser {
                 embedContent += "\n##### " + embedTitle; // h5 is probably best.
             }
             if (embed.author && embed.author.name) {
-                embedContent += `\n**${escapeHtml(embed.author.name)}**`;
+                embedContent += `\n**${htmlEntities.encode(embed.author.name)}**`;
             }
             if (embed.description) {
                 embedContent += "\n" + markdown.toHTML(embed.description, {
@@ -214,13 +214,13 @@ export class DiscordMessageParser {
             }
             let embedContent = content ? "<hr>" : "";
             const embedTitle = embed.url ?
-                `<a href="${escapeHtml(embed.url)}">${escapeHtml(embed.title)}</a>`
-                : (embed.title ? escapeHtml(embed.title) : undefined);
+                `<a href="${htmlEntities.encode(embed.url)}">${htmlEntities.encode(embed.title)}</a>`
+                : (embed.title ? htmlEntities.encode(embed.title) : undefined);
             if (embedTitle) {
                 embedContent += `<h5>${embedTitle}</h5>`; // h5 is probably best.
             }
             if (embed.author && embed.author.name) {
-                embedContent += `<strong>${escapeHtml(embed.author.name)}</strong><br>`;
+                embedContent += `<strong>${htmlEntities.encode(embed.author.name)}</strong><br>`;
             }
             if (embed.description) {
                 embedContent += "<p>";
@@ -234,7 +234,7 @@ export class DiscordMessageParser {
             }
             if (embed.fields) {
                 for (const field of embed.fields) {
-                    embedContent += `<p><strong>${escapeHtml(field.name)}</strong><br>`;
+                    embedContent += `<p><strong>${htmlEntities.encode(field.name)}</strong><br>`;
                     embedContent += markdown.toHTML(field.value, {
                         discordCallback: this.getDiscordParseCallbacks(opts, msg),
                         embed: true,
@@ -245,7 +245,7 @@ export class DiscordMessageParser {
                 }
             }
             if (embed.image) {
-                const imgUrl = escapeHtml(embed.image.url);
+                const imgUrl = htmlEntities.encode(embed.image.url);
                 embedContent += `<p>Image: <a href="${imgUrl}">${imgUrl}</a></p>`;
             }
             if (embed.footer) {
@@ -301,7 +301,7 @@ export class DiscordMessageParser {
             return `@${role.name}`;
         }
         const color = Util.NumberToHTMLColor(role.color);
-        return `<span data-mx-color="${color}"><strong>@${escapeHtml(role.name)}</strong></span>`;
+        return `<span data-mx-color="${color}"><strong>@${htmlEntities.encode(role.name)}</strong></span>`;
     }
 
     public InsertEmoji(opts: IDiscordMessageParserOpts, node: IEmojiNode): string {
@@ -327,7 +327,7 @@ export class DiscordMessageParser {
             const animated = results[ANIMATED_MXC_INSERT_REGEX_GROUP] === "1";
             const id = results[ID_MXC_INSERT_REGEX_GROUP];
             let replace = "";
-            const nameHtml = escapeHtml(name);
+            const nameHtml = htmlEntities.encode(name);
             const mxcUrl = await opts.callbacks.getEmoji(name, animated, id);
             if (mxcUrl) {
                 if (html) {
@@ -361,10 +361,10 @@ export class DiscordMessageParser {
             const user = await opts.callbacks.getUser(id);
             let replace = "";
             if (user) {
-                replace = html ? `<a href="${MATRIX_TO_LINK}${escapeHtml(user.mxid)}">` +
-                    `${escapeHtml(user.name)}</a>` : `${user.name} (${user.mxid})`;
+                replace = html ? `<a href="${MATRIX_TO_LINK}${htmlEntities.encode(user.mxid)}">` +
+                    `${htmlEntities.encode(user.name)}</a>` : `${user.name} (${user.mxid})`;
             } else {
-                replace = html ? `&lt;@${escapeHtml(id)}&gt;` : `<@${id}>`;
+                replace = html ? `&lt;@${htmlEntities.encode(id)}&gt;` : `<@${id}>`;
             }
             content = content.replace(results[0], replace);
             results = USER_INSERT_REGEX.exec(content);
@@ -385,10 +385,10 @@ export class DiscordMessageParser {
             let replace = "";
             if (channel) {
                 const name = "#" + channel.name;
-                replace = html ? `<a href="${MATRIX_TO_LINK}${escapeHtml(channel.mxid)}">` +
-                    `${escapeHtml(name)}</a>` : name;
+                replace = html ? `<a href="${MATRIX_TO_LINK}${htmlEntities.encode(channel.mxid)}">` +
+                    `${htmlEntities.encode(name)}</a>` : name;
             } else {
-                replace = html ? `&lt;#${escapeHtml(id)}&gt;` : `<#${id}>`;
+                replace = html ? `&lt;#${htmlEntities.encode(id)}&gt;` : `<#${id}>`;
             }
             content = content.replace(results[0], replace);
             results = CHANNEL_INSERT_REGEX.exec(content);
