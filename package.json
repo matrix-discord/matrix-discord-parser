@@ -1,6 +1,6 @@
 {
   "name": "matrix-discord-parser",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A bridge between Matrix and Discord",
   "main": "./lib/src/index.js",
   "scripts": {
