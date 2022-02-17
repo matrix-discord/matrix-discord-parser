@@ -293,7 +293,7 @@ code
             const mp = new MatrixMessageParser();
             const msg = getHtmlMessage("<a href=\"https://matrix.to/#/@_discord_789:localhost\">TestUsername</a>");
             const result = await mp.FormatMessage(defaultOpts, msg);
-            expect(result).is.equal("[TestUsername](https://matrix.to/#/@_discord_789:localhost)");
+            expect(result).is.equal("TestUsername");
         });
         it("Parses channel pills", async () => {
             const mp = new MatrixMessageParser();
