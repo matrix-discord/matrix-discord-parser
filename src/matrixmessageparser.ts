@@ -181,7 +181,9 @@ export class MatrixMessageParser {
         if (!attrs.href || !attrs.href.startsWith(MATRIX_TO_LINK)) {
             return await this.parseLinkContent(opts, node);
         }
-        const id = attrs.href.replace(MATRIX_TO_LINK, "");
+        // Some matrix clients URL encode the matrix.to link
+        const url = decodeURI(attrs.href);
+        const id = url.replace(MATRIX_TO_LINK, "");
         let reply = "";
         switch (id[0]) {
             case "@":
