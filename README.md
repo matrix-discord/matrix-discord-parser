@@ -1,3 +1,5 @@
+**THIS PROJECT HAS BEEN MIGRATED OVER TO GITLAB: [matrix-discord-parser](https://gitlab.com/mx-puppet/discord/matrix-discord-parser)**
+
 [![#discord:half-shot.uk](https://img.shields.io/matrix/discord:half-shot.uk.svg?server_fqdn=matrix.half-shot.uk&label=%23discord:half-shot.uk&logo=matrix)](https://matrix.to/#/#discord:half-shot.uk)
 # matrix-discord-parser
 This package is a message parser for sending messages between [Matrix](https://matrix.org/) and
