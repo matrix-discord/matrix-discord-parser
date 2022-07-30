@@ -195,7 +195,7 @@ export class MatrixMessageParser {
                 break;
         }
         if (!reply) {
-            return await this.parseLinkContent(opts, node);
+            return "<" + await this.parseLinkContent(opts, node) + ">";
         }
         return reply;
     }
