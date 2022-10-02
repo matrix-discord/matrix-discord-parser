@@ -30,6 +30,22 @@ export class Util {
         return htmlColor;
     }
 
+    public static Rot13(plaintext: string): string {
+        const UPPER_Z = 90;
+        const LOWER_Z = 122;
+        const CAESAR_SHIFT = 13;
+        const ALPHABET_LENGTH = 26;
+        return plaintext.replace(/[a-zA-Z]/g, (c) => {
+            const code = c.charCodeAt(0);
+            let shiftedCode = code + CAESAR_SHIFT;
+            if ((code <= UPPER_Z && shiftedCode > UPPER_Z)
+                || (code <= LOWER_Z && shiftedCode > LOWER_Z)) {
+                shiftedCode = shiftedCode - ALPHABET_LENGTH;
+            }
+            return String.fromCharCode(shiftedCode);
+        });
+    }
+
     public static async AsyncForEach(arr, callback) {
         for (let i = 0; i < arr.length; i++) {
             await callback(arr[i], i, arr);
